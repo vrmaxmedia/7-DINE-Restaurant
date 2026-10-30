@@ -342,8 +342,12 @@ END:VCARD`;
               <p className="review-error">{error}</p>
             ) : reviewDraft ? (
               <p className="review-body-text">
-                {displayText}
-                {isTyping && <span className="typewriter-cursor"></span>}
+                {/* ghost: poora text invisible rakh ke box ki height pehle se fix kar deta hai */}
+                <span className="review-ghost" aria-hidden="true">{reviewDraft}</span>
+                <span className="review-live">
+                  {displayText}
+                  {isTyping && <span className="typewriter-cursor"></span>}
+                </span>
               </p>
             ) : (
               <p className="review-placeholder">Your review draft will appear here.</p>
@@ -714,7 +718,7 @@ END:VCARD`;
           transform: scale(0.95);
         }
         .review-display-zone {
-          min-height: 80px;
+          min-height: 175px;
           display: flex;
           align-items: center;
           justify-content: center;
@@ -733,6 +737,18 @@ END:VCARD`;
           margin: 0;
           width: 100%;
           white-space: pre-wrap;
+          position: relative;
+          display: block;
+        }
+        .review-ghost {
+          display: block;
+          visibility: hidden;
+        }
+        .review-live {
+          position: absolute;
+          top: 0;
+          left: 0;
+          right: 0;
         }
         .review-placeholder {
           font-family: Georgia, serif;
