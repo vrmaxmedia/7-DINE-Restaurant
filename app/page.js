@@ -189,14 +189,7 @@ export default function UniversalReviewPage() {
   }, []);
 
   useEffect(() => {
-    const hasSocials = !!(
-    CLIENT_CONFIG.instagramUrl ||
-    CLIENT_CONFIG.whatsappChannelUrl ||
-    CLIENT_CONFIG.facebookUrl ||
-    CLIENT_CONFIG.youtubeUrl
-  );
-
-  if (!mounted) return;
+    if (!mounted) return;
     generateAIReview(selectedChipObj, language);
     return () => abortControllerRef.current?.abort();
   }, [mounted, selectedChipObj, language, generateAIReview]);
@@ -250,6 +243,13 @@ END:VCARD`;
     link.remove();
     URL.revokeObjectURL(url);
   }
+
+  const hasSocials = !!(
+    CLIENT_CONFIG.instagramUrl ||
+    CLIENT_CONFIG.whatsappChannelUrl ||
+    CLIENT_CONFIG.facebookUrl ||
+    CLIENT_CONFIG.youtubeUrl
+  );
 
   if (!mounted) return <div style={{ minHeight: "100vh", backgroundColor: "#a14327" }} />;
 
