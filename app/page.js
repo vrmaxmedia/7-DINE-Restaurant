@@ -342,12 +342,8 @@ END:VCARD`;
               <p className="review-error">{error}</p>
             ) : reviewDraft ? (
               <p className="review-body-text">
-                {/* ghost: poora text invisible rakh ke box ki height pehle se fix kar deta hai */}
-                <span className="review-ghost" aria-hidden="true">{reviewDraft}</span>
-                <span className="review-live">
-                  {displayText}
-                  {isTyping && <span className="typewriter-cursor"></span>}
-                </span>
+                {displayText}
+                {isTyping && <span className="typewriter-cursor"></span>}
               </p>
             ) : (
               <p className="review-placeholder">Your review draft will appear here.</p>
@@ -519,7 +515,7 @@ END:VCARD`;
           --muted: #9c8478;
           min-height: 100vh;
           background: linear-gradient(180deg, #c4623c 0%, #a14327 55%, #86331d 100%);
-          padding: 14px 16px 24px;
+          padding: 8px 16px 20px;
           box-sizing: border-box;
           font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
           color: #2b1810;
@@ -536,22 +532,22 @@ END:VCARD`;
           text-align: center;
         }
         .brand-medallion-badge {
-          margin-top: 12px;
-          margin-bottom: 6px;
+          margin-top: 2px;
+          margin-bottom: 2px;
           display: flex;
           flex-direction: column;
           align-items: center;
         }
         .logo-circle-container {
-          width: 135px;
-          height: 135px;
+          width: clamp(88px, 12vh, 112px);
+          height: clamp(88px, 12vh, 112px);
           border-radius: 50%;
           background-color: transparent;
           background-size: cover;
           background-position: center;
           background-repeat: no-repeat;
           box-shadow: 0 14px 34px rgba(40, 10, 4, 0.4), 0 6px 14px rgba(0,0,0,0.18);
-          margin-bottom: 12px;
+          margin-bottom: 8px;
           animation: floatLogo 3.5s ease-in-out infinite;
           border: 3px solid #f2c46d;
           transition: transform 0.2s ease;
@@ -568,26 +564,26 @@ END:VCARD`;
         }
         .brand-main-title {
           font-family: Georgia, serif;
-          font-size: 26px;
+          font-size: 21px;
           font-weight: 800;
           color: #ffffff;
-          margin: 0 0 4px;
+          margin: 0 0 2px;
           letter-spacing: 0.3px;
           text-shadow: 0 2px 10px rgba(0,0,0,0.25);
         }
         .brand-serif-subtitle {
           font-family: Georgia, serif;
           font-style: italic;
-          font-size: 13.5px;
+          font-size: 12.5px;
           color: #ffe2b0;
-          margin: 0 0 10px;
+          margin: 0 0 4px;
         }
         .royal-shahi-divider {
           display: flex;
           align-items: center;
           justify-content: center;
           width: 85%;
-          margin: 8px auto 12px;
+          margin: 4px auto 6px;
           gap: 10px;
         }
         .divider-line {
@@ -603,8 +599,8 @@ END:VCARD`;
           display: flex;
           gap: 4px;
           color: #ffd166;
-          font-size: 16px;
-          margin-bottom: 4px;
+          font-size: 15px;
+          margin-bottom: 2px;
         }
         .experience-tracker-title {
           font-size: 9px;
@@ -612,19 +608,19 @@ END:VCARD`;
           letter-spacing: 2px;
           color: #ffe9d6;
           text-transform: uppercase;
-          margin: 0 0 12px;
+          margin: 0 0 8px;
         }
         .floating-pills-cloud {
           display: flex;
           flex-wrap: wrap;
           justify-content: center;
-          gap: 6px;
-          margin-bottom: 14px;
+          gap: 5px;
+          margin-bottom: 10px;
           width: 100%;
         }
         .embossed-pill {
           border-radius: 999px;
-          padding: 6px 14px;
+          padding: 5px 12px;
           font-size: 11px;
           background: #ffffff;
           color: var(--primary-dark);
@@ -648,7 +644,7 @@ END:VCARD`;
           border-radius: 999px;
           padding: 3px;
           gap: 2px;
-          margin-bottom: 16px;
+          margin-bottom: 10px;
           box-shadow: 0 3px 10px rgba(180, 155, 130, 0.12);
           border: 1px solid var(--line);
         }
@@ -718,7 +714,7 @@ END:VCARD`;
           transform: scale(0.95);
         }
         .review-display-zone {
-          min-height: 175px;
+          min-height: 80px;
           display: flex;
           align-items: center;
           justify-content: center;
@@ -737,18 +733,6 @@ END:VCARD`;
           margin: 0;
           width: 100%;
           white-space: pre-wrap;
-          position: relative;
-          display: block;
-        }
-        .review-ghost {
-          display: block;
-          visibility: hidden;
-        }
-        .review-live {
-          position: absolute;
-          top: 0;
-          left: 0;
-          right: 0;
         }
         .review-placeholder {
           font-family: Georgia, serif;
@@ -779,7 +763,7 @@ END:VCARD`;
           text-align: center;
           color: var(--gold);
           font-size: 7px;
-          margin: 6px 0 10px;
+          margin: 4px 0 8px;
         }
         .full-luxury-copy-btn {
           width: 100%;
