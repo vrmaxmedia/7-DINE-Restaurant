@@ -108,7 +108,7 @@ async function copyToClipboard(text) {
 export default function ClinicReviewPage() {
   const [mounted, setMounted] = useState(false);
   const [selectedChips, setSelectedChips] = useState([]);
-  const [language, setLanguage] = useState("ENGLISH"); // Default set to English here
+  const [language, setLanguage] = useState("ENGLISH");
   const [reviewDraft, setReviewDraft] = useState("");
   const [loading, setLoading] = useState(false);
   const [copied, setCopied] = useState(false);
@@ -448,19 +448,38 @@ END:VCARD`;
 
       <style jsx global>{`
         /* =========================================
-           MEDICAL GLASSMORPHISM THEME - FIXED GLOBAL BG
+           MEDICAL GLASSMORPHISM THEME - BULLETPROOF FIXED BG
            ========================================= */
 
         /* Force override any global layout settings */
         html, body {
           margin: 0 !important;
           padding: 0 !important;
-          background-color: #e0f2fe !important; /* Forces medical blue fallback everywhere */
+          background-color: #e0f2fe !important; 
           min-height: 100% !important;
+          position: relative; /* important for pseudo-element */
+        }
+
+        /* 
+         * FIX: Bulletproof Fixed Background for Mobile 
+         * Instead of background-attachment: fixed which bugs out on Safari/Android,
+         * we use a fixed pseudo-element behind everything.
+         */
+        body::before {
+          content: "";
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 100vw;
+          height: 100vh;
+          background-image: url('/1000317120.png'); 
+          background-size: cover;
+          background-position: center;
+          background-repeat: no-repeat;
+          z-index: -1; /* Keeps it behind all content */
         }
 
         .medical-glass-viewport {
-          --bg-fallback: #e0f2fe; 
           --tx-main: #0f172a;     
           --tx-sub: #334155;      
           --medical-blue: #0284c7; 
@@ -470,14 +489,8 @@ END:VCARD`;
           --glass-shadow: rgba(0, 0, 0, 0.08);
 
           min-height: 100vh;
-          background-color: var(--bg-fallback);
-          
-          /* Background Image */
-          background-image: url('/1000317120.png'); 
-          background-size: cover;
-          background-position: center;
-          background-attachment: fixed;
-          background-repeat: no-repeat;
+          /* Removed background properties from here, body::before handles it perfectly */
+          background-color: transparent; 
           
           padding: 10px 16px 24px;
           box-sizing: border-box;
