@@ -2,55 +2,50 @@
 
 import { useState, useEffect, useRef, useCallback } from "react";
 
+// =====================================================================
+//  CLIENT CONFIGURATION (Dr. Kanika Gupta - Gynecologist)
+// =====================================================================
 const CLIENT_CONFIG = {
-  clientId: "7dine_yamunavihar_01",
-  businessName: "7 DINE Café and Restaurant",
-  subHeading: "Café & Restaurant • Yamuna Vihar, Delhi",
-  tagline: "CAFÉ & RESTAURANT • DINE-IN • ONLINE ORDERING • YAMUNA VIHAR, DELHI",
+  businessName: "Dr. Kanika Gupta",
+  subHeading: "Expert Gynecologist & Obstetrician",
+  tagline: "PREGNANCY CARE • PCOS TREATMENT • EXPERT CONSULTATION",
   description:
-    "Well-rated café and restaurant in Yamuna Vihar, Delhi with a cozy modern interior, tasty food, friendly service and pocket-friendly pricing (about ₹200 to ₹400 per person). Good for family dinners, friends' hangouts and casual outings, with dine-in and online ordering available.",
+    "Highly trusted gynecologist in Yamuna Vihar, Delhi, specializing in high-risk pregnancy, PCOS, menstrual issues, and infertility treatment. Providing genuine advice and effective care.",
   city: "Yamuna Vihar, Delhi 110053",
-  fullAddress: "Ground Floor, Yamuna Vihar, B1-239, Block B, Yamuna Vihar, Delhi, 110053",
-  phone: "+919971784379",
-  cleanPhone: "919971784379",
-  logoUrl: "/logo.png",
-  googleReviewUrl: "https://search.google.com/local/writereview?placeid=ChIJJy-PHQD9DDkRyL_DWJBP6WM",
-  // Short maps link mil jaye to yaha replace kar dena
-  mapsDirectionUrl:
-    "https://www.google.com/maps/search/?api=1&query=7%20DINE%20Caf%C3%A9%20and%20Restaurant%20Yamuna%20Vihar&query_place_id=ChIJJy-PHQD9DDkRyL_DWJBP6WM",
+  areaLabel: "Yamuna Vihar, Delhi",
+  fullAddress: "B-1/4, Block B, Yamuna Vihar, New Delhi, Delhi, 110053",
+  phone: "+917982355228",
+  cleanPhone: "917982355228",
+  logoUrl: "/logo.png", // Ensure you upload her logo/photo here
 
-  // Social links: jo ho wahi daalo, khali ("") chhodoge to icon apne aap hide ho jayega
+  // TODO: Replace YOUR_PLACE_ID with actual Place ID
+  googleReviewUrl: "https://search.google.com/local/writereview?placeid=ChIJFRWJVdz9DDkRlv6j-9gc4PA",
+  mapsDirectionUrl:
+    "https://www.google.com/maps/search/?api=1&query=" +
+    encodeURIComponent("Dr Kanika Gupta, Block B, Yamuna Vihar, Delhi"),
+
   instagramUrl: "",
   facebookUrl: "",
   youtubeUrl: "",
-  whatsappChannelUrl: "",
+  websiteUrl: "https://kgmedicalcentre.com",
 
-  // "What we offer" card (Google listing se)
-  offers: [
-    "Café & Restaurant Dining",
-    "Cozy Dine-in Experience",
-    "Online Ordering Available",
-    "Pocket-friendly • ₹200 – 400 per person",
-  ],
-
-  // VR Max AI (agency) contact
   agencyName: "VR Max AI",
   agencyWhatsapp: "918700660097",
   agencyPhoneDisplay: "+91 87006 60097",
 
-  customInstruction:
-    "You are an authentic local customer writing an unscripted Google Maps review for 7 DINE Café and Restaurant in Yamuna Vihar, Delhi. Write like a real human speaking straight from the heart. Talk about food taste, cozy ambience, friendly service and good value. Strictly DO NOT use full stops (.) at the end of sentences. Vary lengths completely randomly (some 1-line quick reviews, some 2-line, some 3-4 lines detailed). Never use robotic or repetitive openings.",
-
+  // Medical Clinic Chips (Matched with route.js)
   chips: [
-    { label: "All", context: "overall dining experience at the café and restaurant, food, ambience, service and value" },
-    { label: "Food & Taste", context: "tasty fresh food, good flavours, nicely served starters, main course and drinks" },
-    { label: "Ambience & Seating", context: "cozy modern interior, comfortable seating, nice lighting and a pleasant calm vibe" },
-    { label: "Staff & Service", context: "polite friendly staff, quick and attentive service, welcoming behaviour" },
-    { label: "Value for Money", context: "fair pocket-friendly pricing, good portions and great value for the money" },
-    { label: "Clean & Hygienic", context: "clean tables, neat hygienic place and fresh well-maintained surroundings" },
-    { label: "Hangout Spot", context: "great place to hang out with friends or have a family dinner in Yamuna Vihar" },
+    'Friendly Doctor',
+    'Effective Treatment',
+    'Clean Clinic',
+    'PCOS & Pregnancy',
+    'Less Waiting Time',
+    'Trusted Specialist',
+    'Yamuna Vihar'
   ],
 };
+
+const HAS_SOCIAL = !!(CLIENT_CONFIG.instagramUrl || CLIENT_CONFIG.facebookUrl || CLIENT_CONFIG.youtubeUrl || CLIENT_CONFIG.websiteUrl);
 
 const MAP_EMBED_URL = `https://www.google.com/maps?q=${encodeURIComponent(
   `${CLIENT_CONFIG.businessName}, ${CLIENT_CONFIG.fullAddress}`
@@ -93,9 +88,7 @@ async function copyToClipboard(text) {
       await navigator.clipboard.writeText(text);
       return true;
     }
-  } catch (e) {
-    // fallback neeche
-  }
+  } catch (e) {}
   try {
     const ta = document.createElement("textarea");
     ta.value = text;
@@ -104,7 +97,6 @@ async function copyToClipboard(text) {
     ta.style.opacity = "0";
     document.body.appendChild(ta);
     ta.select();
-    ta.setSelectionRange(0, text.length);
     const ok = document.execCommand("copy");
     ta.remove();
     return ok;
@@ -113,10 +105,10 @@ async function copyToClipboard(text) {
   }
 }
 
-export default function UniversalReviewPage() {
+export default function ClinicReviewPage() {
   const [mounted, setMounted] = useState(false);
-  const [selectedChipObj, setSelectedChipObj] = useState(CLIENT_CONFIG.chips[0]);
-  const [language, setLanguage] = useState("ENGLISH");
+  const [selectedChips, setSelectedChips] = useState([]);
+  const [language, setLanguage] = useState("HINGLISH");
   const [reviewDraft, setReviewDraft] = useState("");
   const [loading, setLoading] = useState(false);
   const [copied, setCopied] = useState(false);
@@ -135,7 +127,7 @@ export default function UniversalReviewPage() {
     };
   }, []);
 
-  const generateAIReview = useCallback(async (chipObj, lang) => {
+  const generateAIReview = useCallback(async (chipsToUse, lang) => {
     abortControllerRef.current?.abort();
     const controller = new AbortController();
     abortControllerRef.current = controller;
@@ -147,8 +139,6 @@ export default function UniversalReviewPage() {
     setReviewDraft("");
 
     try {
-      const effectiveFocus = `${chipObj.label} (Context cues: ${chipObj.context})`;
-
       const res = await fetch("/api/reviews", {
         method: "POST",
         signal: controller.signal,
@@ -156,15 +146,13 @@ export default function UniversalReviewPage() {
         cache: "no-store",
         body: JSON.stringify({
           businessName: CLIENT_CONFIG.businessName,
-          category: CLIENT_CONFIG.tagline,
+          category: "Gynecologist Clinic",
           description: CLIENT_CONFIG.description,
           city: CLIENT_CONFIG.city,
-          selectedService: effectiveFocus,
-          customInstruction: CLIENT_CONFIG.customInstruction,
+          selectedChips: chipsToUse,
           language: lang,
           nonce: Math.random().toString(36).substring(2, 12),
           timestamp: Date.now(),
-          randomSeed: Math.floor(Math.random() * 100000),
           recentLengths: recentLengthsRef.current,
         }),
       });
@@ -190,21 +178,27 @@ export default function UniversalReviewPage() {
 
   useEffect(() => {
     if (!mounted) return;
-    generateAIReview(selectedChipObj, language);
+    generateAIReview(selectedChips, language);
     return () => abortControllerRef.current?.abort();
-  }, [mounted, selectedChipObj, language, generateAIReview]);
+  }, [mounted, selectedChips, language, generateAIReview]);
 
-  function handleChipChange(chipObj) {
-    if (chipObj.label === selectedChipObj.label) {
-      generateAIReview(chipObj, language);
-      return;
+  function toggleChip(chip) {
+    let updated;
+    if (selectedChips.includes(chip)) {
+      updated = selectedChips.filter((c) => c !== chip);
+    } else {
+      if (selectedChips.length >= 3) {
+        alert("Aap max 3 points select kar sakte hain.");
+        return;
+      }
+      updated = [...selectedChips, chip];
     }
-    setSelectedChipObj(chipObj);
+    setSelectedChips(updated);
   }
 
   function handleLanguageChange(lang) {
     if (lang === language) {
-      generateAIReview(selectedChipObj, lang);
+      generateAIReview(selectedChips, lang);
       return;
     }
     setLanguage(lang);
@@ -244,18 +238,12 @@ END:VCARD`;
     URL.revokeObjectURL(url);
   }
 
-  const hasSocials = !!(
-    CLIENT_CONFIG.instagramUrl ||
-    CLIENT_CONFIG.whatsappChannelUrl ||
-    CLIENT_CONFIG.facebookUrl ||
-    CLIENT_CONFIG.youtubeUrl
-  );
-
-  if (!mounted) return <div style={{ minHeight: "100vh", backgroundColor: "#a14327" }} />;
+  if (!mounted) return <div style={{ minHeight: "100vh", backgroundColor: "#e0f2fe" }} />;
 
   return (
-    <main className="soft-luxury-viewport">
+    <main className="medical-glass-viewport">
       <div className="main-content-flow">
+        
         {/* Logo */}
         <div className="brand-medallion-badge">
           <div
@@ -269,9 +257,9 @@ END:VCARD`;
 
         <p className="brand-serif-subtitle">{CLIENT_CONFIG.subHeading}</p>
 
-        <div className="royal-shahi-divider">
+        <div className="medical-divider">
           <span className="divider-line"></span>
-          <span className="divider-gem">◆</span>
+          <span className="divider-cross">✚</span>
           <span className="divider-line"></span>
         </div>
 
@@ -284,15 +272,15 @@ END:VCARD`;
         {/* Filter Chips */}
         <div className="floating-pills-cloud">
           {CLIENT_CONFIG.chips.map((chip) => {
-            const active = selectedChipObj.label === chip.label;
+            const active = selectedChips.includes(chip);
             return (
               <button
-                key={chip.label}
+                key={chip}
                 type="button"
-                onClick={() => handleChipChange(chip)}
+                onClick={() => toggleChip(chip)}
                 className={`embossed-pill ${active ? "active" : ""}`}
               >
-                {chip.label}
+                {chip} {active && "✓"}
               </button>
             );
           })}
@@ -315,8 +303,8 @@ END:VCARD`;
           })}
         </div>
 
-        {/* Review Box */}
-        <div className="signature-review-box">
+        {/* Review Box (Glassmorphism) */}
+        <div className="signature-review-box glass-panel">
           <div className="box-top-ribbon">
             <div className="label-badge">
               <span className="dot-ping"></span>
@@ -325,7 +313,7 @@ END:VCARD`;
             <button
               type="button"
               disabled={loading || isTyping}
-              onClick={() => generateAIReview(selectedChipObj, language)}
+              onClick={() => generateAIReview(selectedChips, language)}
               className="top-rewrite-btn"
             >
               <span>Rewrite</span>
@@ -350,7 +338,7 @@ END:VCARD`;
             )}
           </div>
 
-          <div className="card-ornament-center"><span>◆</span></div>
+          <div className="card-ornament-center"><span>✚</span></div>
 
           <button
             type="button"
@@ -363,8 +351,8 @@ END:VCARD`;
           <p className="card-disclaimer-note">Please review the wording before posting.</p>
         </div>
 
-        {/* Quick Actions */}
-        <div className="quick-actions-card">
+        {/* Quick Actions (Glassmorphism) */}
+        <div className="quick-actions-card glass-panel">
           <div className="soft-action-grid">
             <div className="action-row-upper">
               {/* WhatsApp */}
@@ -400,60 +388,27 @@ END:VCARD`;
               </a>
             </div>
 
-            {hasSocials && (
-            <div className="action-row-lower">
-              {/* Instagram */}
-              {CLIENT_CONFIG.instagramUrl && (
-                <a href={CLIENT_CONFIG.instagramUrl} target="_blank" rel="noreferrer" className="soft-circle-action">
-                <div className="icon-disc insta-disc">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
-                </div>
-                <span className="icon-tag">Instagram</span>
-              </a>
-              )}
-
-              {/* WhatsApp Channel */}
-              {CLIENT_CONFIG.whatsappChannelUrl && (
-                <a href={CLIENT_CONFIG.whatsappChannelUrl} target="_blank" rel="noreferrer" className="soft-circle-action">
-                <div className="icon-disc wa-channel-disc">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
-                </div>
-                <span className="icon-tag">WA Channel</span>
-              </a>
-              )}
-
-              {/* Facebook */}
-              {CLIENT_CONFIG.facebookUrl && (
-                <a href={CLIENT_CONFIG.facebookUrl} target="_blank" rel="noreferrer" className="soft-circle-action">
-                <div className="icon-disc fb-disc">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
-                </div>
-                <span className="icon-tag">Facebook</span>
-              </a>
-              )}
-
-              {/* YouTube */}
-              {CLIENT_CONFIG.youtubeUrl && (
-                <a href={CLIENT_CONFIG.youtubeUrl} target="_blank" rel="noreferrer" className="soft-circle-action">
-                <div className="icon-disc yt-disc">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M22.54 6.42a2.78 2.78 0 0 0-1.95-1.96C18.88 4 12 4 12 4s-6.88 0-8.59.46a2.78 2.78 0 0 0-1.95 1.96A29 29 0 0 0 1 12a29 29 0 0 0 .46 5.58 2.78 2.78 0 0 0 1.95 1.96C5.12 20 12 20 12 20s6.88 0 8.59-.46a2.78 2.78 0 0 0 1.95-1.96A29 29 0 0 0 23 12a29 29 0 0 0-.46-5.58z"/><polygon points="9.75 15.02 15.5 12 9.75 8.98 9.75 15.02" fill="currentColor"/></svg>
-                </div>
-                <span className="icon-tag">YouTube</span>
-              </a>
+            <div className="action-row-lower" style={HAS_SOCIAL ? undefined : { display: "none" }}>
+              {CLIENT_CONFIG.websiteUrl && (
+                <a href={CLIENT_CONFIG.websiteUrl} target="_blank" rel="noreferrer" className="soft-circle-action">
+                  <div className="icon-disc web-disc">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+                  </div>
+                  <span className="icon-tag">Website</span>
+                </a>
               )}
             </div>
-            )}
           </div>
         </div>
 
-        {/* Map Card */}
-        <div className="embedded-map-card">
+        {/* Map Card (Glassmorphism) */}
+        <div className="embedded-map-card glass-panel">
           <a href={CLIENT_CONFIG.mapsDirectionUrl} target="_blank" rel="noreferrer" className="map-card-header-link">
             <div className="address-highlight-box">
               <p className="agency-clean-address"><strong>📍 Address:</strong> {CLIENT_CONFIG.fullAddress}</p>
             </div>
             <div className="map-card-header">
-              <span>Visit Us • Yamuna Vihar, Delhi</span>
+              <span>Visit Clinic • {CLIENT_CONFIG.areaLabel}</span>
             </div>
           </a>
           <div className="map-iframe-container">
@@ -478,21 +433,9 @@ END:VCARD`;
           </a>
         </div>
 
-        {/* What we offer */}
-        {CLIENT_CONFIG.offers?.length > 0 && (
-          <div className="offers-card">
-            <h2 className="offers-title">What we offer</h2>
-            <ul className="offers-list">
-              {CLIENT_CONFIG.offers.map((o) => (
-                <li key={o}>{o}</li>
-              ))}
-            </ul>
-          </div>
-        )}
-
         {/* Mini Footer */}
         <footer className="mini-footer">
-          <span className="mini-footer-pill">
+          <span className="mini-footer-pill glass-panel">
             Powered by <strong>{CLIENT_CONFIG.agencyName}</strong>
             <span className="mini-footer-dot">•</span>
             Get QR:
@@ -504,25 +447,40 @@ END:VCARD`;
       </div>
 
       <style jsx global>{`
-        .soft-luxury-viewport {
-          --primary: #6e2412;
-          --primary-dark: #4a150a;
-          --primary-mid: #8a2f19;
-          --gold: #f2c46d;
-          --gold-deep: #b9792a;
-          --line: #f0d9c8;
-          --soft: #fdf6ef;
-          --muted: #9c8478;
+        /* =========================================
+           MEDICAL GLASSMORPHISM THEME
+           Uses the user's provided background image
+           ========================================= */
+
+        .medical-glass-viewport {
+          --bg-fallback: #e0f2fe; 
+          --tx-main: #0f172a;     /* Dark Slate */
+          --tx-sub: #334155;      
+          --medical-blue: #0284c7; /* Brand Blue */
+          --medical-light: #38bdf8;
+          --glass-bg: rgba(255, 255, 255, 0.75); /* Transparent White */
+          --glass-border: rgba(255, 255, 255, 0.6);
+          --glass-shadow: rgba(0, 0, 0, 0.08);
+
           min-height: 100vh;
-          background: linear-gradient(180deg, #c4623c 0%, #a14327 55%, #86331d 100%);
-          padding: 8px 16px 20px;
+          background-color: var(--bg-fallback);
+          
+          /* User's Background Image MUST be in public directory */
+          background-image: url('/1000317120.png'); 
+          background-size: cover;
+          background-position: center;
+          background-attachment: fixed;
+          background-repeat: no-repeat;
+          
+          padding: 10px 16px 24px;
           box-sizing: border-box;
           font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-          color: #2b1810;
+          color: var(--tx-main);
           display: flex;
           flex-direction: column;
           align-items: center;
         }
+
         .main-content-flow {
           width: 100%;
           max-width: 410px;
@@ -531,123 +489,145 @@ END:VCARD`;
           align-items: center;
           text-align: center;
         }
+
+        /* Glassmorphism Utility Class */
+        .glass-panel {
+          background: var(--glass-bg);
+          backdrop-filter: blur(12px);
+          -webkit-backdrop-filter: blur(12px);
+          border: 1px solid var(--glass-border);
+          box-shadow: 0 8px 32px var(--glass-shadow);
+        }
+
         .brand-medallion-badge {
-          margin-top: 2px;
-          margin-bottom: 2px;
+          margin-top: 12px;
+          margin-bottom: 6px;
           display: flex;
           flex-direction: column;
           align-items: center;
         }
+
         .logo-circle-container {
-          width: clamp(88px, 12vh, 112px);
-          height: clamp(88px, 12vh, 112px);
+          width: 110px;
+          height: 110px;
           border-radius: 50%;
-          background-color: transparent;
+          background-color: #ffffff;
           background-size: cover;
           background-position: center;
           background-repeat: no-repeat;
-          box-shadow: 0 14px 34px rgba(40, 10, 4, 0.4), 0 6px 14px rgba(0,0,0,0.18);
-          margin-bottom: 8px;
+          box-shadow: 0 10px 25px rgba(2, 132, 199, 0.2);
+          margin-bottom: 12px;
           animation: floatLogo 3.5s ease-in-out infinite;
-          border: 3px solid #f2c46d;
-          transition: transform 0.2s ease;
+          border: 3px solid var(--medical-blue);
         }
-        .logo-circle-container:active {
-          transform: scale(0.96);
-        }
+
         @keyframes floatLogo {
           0%, 100% { transform: translateY(0); }
           50% { transform: translateY(-6px); }
         }
-        @media (prefers-reduced-motion: reduce) {
-          .logo-circle-container { animation: none; }
-        }
+
         .brand-main-title {
           font-family: Georgia, serif;
-          font-size: 21px;
+          font-size: 26px;
           font-weight: 800;
-          color: #ffffff;
-          margin: 0 0 2px;
+          color: var(--tx-main);
+          margin: 0 0 4px;
           letter-spacing: 0.3px;
-          text-shadow: 0 2px 10px rgba(0,0,0,0.25);
+          text-shadow: 0 2px 4px rgba(255,255,255,0.5);
         }
+
         .brand-serif-subtitle {
           font-family: Georgia, serif;
           font-style: italic;
-          font-size: 12.5px;
-          color: #ffe2b0;
-          margin: 0 0 4px;
+          font-size: 13.5px;
+          color: var(--medical-blue);
+          margin: 0 0 10px;
+          text-shadow: 0 1px 2px rgba(255,255,255,0.5);
         }
-        .royal-shahi-divider {
+
+        .medical-divider {
           display: flex;
           align-items: center;
           justify-content: center;
           width: 85%;
-          margin: 4px auto 6px;
+          margin: 4px auto 12px;
           gap: 10px;
         }
+
         .divider-line {
           flex: 1;
           height: 1px;
-          background: linear-gradient(90deg, transparent, #f2c46d, transparent);
+          background: linear-gradient(90deg, transparent, var(--medical-blue), transparent);
+          opacity: 0.5;
         }
-        .divider-gem {
-          color: #f2c46d;
-          font-size: 8px;
+
+        .divider-cross {
+          color: var(--medical-blue);
+          font-size: 10px;
         }
+
         .stars-cluster {
           display: flex;
           gap: 4px;
-          color: #ffd166;
-          font-size: 15px;
-          margin-bottom: 2px;
+          color: #f59e0b; /* Golden Yellow */
+          font-size: 16px;
+          margin-bottom: 4px;
+          filter: drop-shadow(0 2px 4px rgba(255,255,255,0.5));
         }
+
         .experience-tracker-title {
-          font-size: 9px;
+          font-size: 9.5px;
           font-weight: 800;
           letter-spacing: 2px;
-          color: #ffe9d6;
+          color: var(--tx-sub);
           text-transform: uppercase;
-          margin: 0 0 8px;
+          margin: 0 0 12px;
         }
+
         .floating-pills-cloud {
           display: flex;
           flex-wrap: wrap;
           justify-content: center;
-          gap: 5px;
-          margin-bottom: 10px;
+          gap: 6px;
+          margin-bottom: 14px;
           width: 100%;
         }
+
         .embossed-pill {
           border-radius: 999px;
-          padding: 5px 12px;
+          padding: 6px 14px;
           font-size: 11px;
-          background: #ffffff;
-          color: var(--primary-dark);
-          border: 1px solid var(--line);
+          background: var(--glass-bg);
+          backdrop-filter: blur(8px);
+          color: var(--tx-sub);
+          border: 1px solid var(--glass-border);
           cursor: pointer;
-          box-shadow: 0 2px 8px rgba(180, 155, 130, 0.08);
-          transition: all 0.16s ease;
+          box-shadow: 0 2px 8px var(--glass-shadow);
+          transition: all 0.2s ease;
         }
-        .embossed-pill:active {
-          transform: scale(0.95);
-        }
+
+        .embossed-pill:active { transform: scale(0.95); }
+
         .embossed-pill.active {
-          background: radial-gradient(circle at 30% 30%, var(--primary-mid) 0%, var(--primary-dark) 100%);
+          background: var(--medical-blue);
           color: #ffffff;
-          border-color: var(--primary-dark);
-          box-shadow: 0 4px 14px rgba(74, 21, 10, 0.3);
+          font-weight: 700;
+          border-color: var(--medical-blue);
+          box-shadow: 0 4px 14px rgba(2, 132, 199, 0.3);
         }
+
         .capsule-lang-dock {
           display: inline-flex;
-          background: #ffffff;
+          background: var(--glass-bg);
+          backdrop-filter: blur(8px);
           border-radius: 999px;
           padding: 3px;
           gap: 2px;
-          margin-bottom: 10px;
-          box-shadow: 0 3px 10px rgba(180, 155, 130, 0.12);
-          border: 1px solid var(--line);
+          margin-bottom: 16px;
+          box-shadow: 0 3px 10px var(--glass-shadow);
+          border: 1px solid var(--glass-border);
         }
+
         .capsule-lang-btn {
           padding: 5px 18px;
           border-radius: 999px;
@@ -655,32 +635,34 @@ END:VCARD`;
           background: transparent;
           font-size: 10px;
           font-weight: 700;
-          color: #7b6b5d;
+          color: var(--tx-sub);
           cursor: pointer;
+          transition: all 0.2s ease;
         }
+
         .capsule-lang-btn.active {
-          background: var(--primary);
+          background: var(--medical-blue);
           color: #ffffff;
-          box-shadow: 0 3px 8px rgba(74, 21, 10, 0.3);
+          box-shadow: 0 3px 8px rgba(2, 132, 199, 0.3);
         }
+
         .signature-review-box {
           width: 100%;
-          background: #ffffff;
           border-radius: 24px;
           padding: 18px;
           box-sizing: border-box;
-          box-shadow: 0 14px 34px rgba(40, 10, 4, 0.28);
           margin-bottom: 16px;
           text-align: left;
-          border-top: 4px solid var(--gold);
-          color: #2b2016;
+          border-top: 4px solid var(--medical-blue);
         }
+
         .box-top-ribbon {
           display: flex;
           justify-content: space-between;
           align-items: center;
           margin-bottom: 10px;
         }
+
         .label-badge {
           display: inline-flex;
           align-items: center;
@@ -688,120 +670,121 @@ END:VCARD`;
           font-size: 8.5px;
           font-weight: 800;
           letter-spacing: 1.8px;
-          color: var(--muted);
+          color: var(--tx-sub);
           text-transform: uppercase;
         }
+
         .dot-ping {
-          width: 5px;
-          height: 5px;
+          width: 6px;
+          height: 6px;
           border-radius: 50%;
-          background: var(--primary);
+          background: var(--medical-blue);
         }
+
         .top-rewrite-btn {
           display: inline-flex;
           align-items: center;
           padding: 4px 10px;
           border-radius: 999px;
-          background: var(--soft);
-          border: 1px solid var(--line);
-          color: var(--primary);
+          background: #ffffff;
+          border: 1px solid var(--medical-light);
+          color: var(--medical-blue);
           font-size: 10.5px;
           font-weight: 650;
           cursor: pointer;
-          transition: transform 0.15s ease;
         }
-        .top-rewrite-btn:active {
-          transform: scale(0.95);
-        }
+
         .review-display-zone {
-          min-height: 80px;
+          min-height: 120px;
           display: flex;
           align-items: center;
           justify-content: center;
           padding: 4px 2px 8px;
         }
+
         .loader-shimmer-wrap {
-          color: var(--gold-deep);
+          color: var(--medical-blue);
           font-size: 12px;
           font-style: italic;
         }
+
         .review-body-text {
           font-family: Georgia, serif;
           font-size: 14.5px;
           line-height: 1.6;
-          color: #2b2016;
+          color: var(--tx-main);
           margin: 0;
           width: 100%;
           white-space: pre-wrap;
         }
+
         .review-placeholder {
           font-family: Georgia, serif;
           font-size: 13px;
           font-style: italic;
-          color: #a49688;
+          color: #64748b;
           margin: 0;
         }
+
         .review-error {
           font-size: 12px;
-          color: #a3212d;
+          color: #ef4444;
           margin: 0;
         }
+
         .typewriter-cursor {
           display: inline-block;
           width: 2px;
           height: 13px;
-          background: var(--primary);
+          background: var(--medical-blue);
           margin-left: 3px;
           vertical-align: middle;
           animation: blink 0.7s infinite;
         }
-        @keyframes blink {
-          0%, 100% { opacity: 1; }
-          50% { opacity: 0; }
-        }
+
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+
         .card-ornament-center {
           text-align: center;
-          color: var(--gold);
-          font-size: 7px;
-          margin: 4px 0 8px;
+          color: var(--medical-blue);
+          font-size: 9px;
+          margin: 6px 0 10px;
+          opacity: 0.5;
         }
+
         .full-luxury-copy-btn {
           width: 100%;
           height: 50px;
           border-radius: 999px;
-          background: linear-gradient(180deg, var(--primary-mid) 0%, var(--primary-dark) 100%);
+          background: linear-gradient(90deg, #0284c7 0%, #0369a1 100%);
           border: none;
           color: #ffffff;
-          font-size: 12px;
-          font-weight: 750;
+          font-size: 12.5px;
+          font-weight: 800;
           cursor: pointer;
-          box-shadow: 0 8px 22px rgba(74, 21, 10, 0.35);
+          box-shadow: 0 8px 22px rgba(2, 132, 199, 0.3);
           transition: transform 0.15s ease;
         }
-        .full-luxury-copy-btn:disabled {
-          opacity: 0.6;
-          cursor: not-allowed;
-        }
-        .full-luxury-copy-btn:active:not(:disabled) {
-          transform: scale(0.98);
-        }
+
+        .full-luxury-copy-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+        .full-luxury-copy-btn:active:not(:disabled) { transform: scale(0.98); }
+
         .card-disclaimer-note {
           font-size: 9.5px;
-          color: var(--muted);
+          color: var(--tx-sub);
           text-align: center;
           margin: 8px 0 0;
           font-style: italic;
         }
+
         .quick-actions-card {
           width: 100%;
-          background: #ffffff;
           border-radius: 22px;
           padding: 18px 12px;
           box-sizing: border-box;
-          border: 1px solid var(--line);
-          box-shadow: 0 10px 28px rgba(40, 10, 4, 0.22);
           margin-bottom: 16px;
         }
+
         .soft-action-grid {
           display: flex;
           flex-direction: column;
@@ -809,94 +792,75 @@ END:VCARD`;
           gap: 16px;
           width: 100%;
         }
-        .action-row-upper {
+
+        .action-row-upper, .action-row-lower {
           display: flex;
           justify-content: center;
           gap: 14px;
           width: 100%;
         }
-        .action-row-lower {
-          display: flex;
-          justify-content: center;
-          gap: 14px;
-          width: 100%;
-        }
+
         .soft-circle-action {
           display: flex;
           flex-direction: column;
           align-items: center;
           gap: 5px;
           text-decoration: none !important;
-          color: #4a3c30;
+          color: var(--tx-sub);
           background: transparent;
           border: none;
           cursor: pointer;
-          padding: 0;
           transition: transform 0.15s ease;
         }
-        .soft-circle-action:active {
-          transform: scale(0.92);
-        }
+
+        .soft-circle-action:active { transform: scale(0.92); }
+
         .icon-disc {
           width: 50px;
           height: 50px;
           border-radius: 50%;
-          background: var(--soft);
+          background: #ffffff;
           display: grid;
           place-items: center;
-          box-shadow: 0 6px 16px rgba(180, 150, 120, 0.15);
-          border: 1px solid var(--line);
+          box-shadow: 0 4px 12px var(--glass-shadow);
+          border: 1px solid var(--medical-light);
           transition: all 0.2s ease;
         }
+
         .icon-disc svg {
           width: 20px;
           height: 20px;
-          stroke: var(--primary-dark);
+          stroke: var(--medical-blue);
           transition: stroke 0.2s ease;
         }
+
         .whatsapp-disc:hover { background: #25d366; border-color: #25d366; }
         .whatsapp-disc:hover svg { stroke: #ffffff; }
-
         .call-disc:hover { background: #007aff; border-color: #007aff; }
         .call-disc:hover svg { stroke: #ffffff; }
-
-        .contact-disc:hover { background: var(--primary-dark); border-color: var(--primary-dark); }
+        .contact-disc:hover { background: var(--medical-blue); border-color: var(--medical-blue); }
         .contact-disc:hover svg { stroke: #ffffff; }
-
         .map-disc:hover { background: #ea4335; border-color: #ea4335; }
         .map-disc:hover svg { stroke: #ffffff; }
-
-        .insta-disc:hover { background: radial-gradient(circle at 30% 107%, #fdf497 0%, #fdf497 5%, #fd5949 45%, #d6249f 60%, #285AEB 90%); border-color: transparent; }
-        .insta-disc:hover svg { stroke: #ffffff; }
-
-        .wa-channel-disc:hover { background: #25d366; border-color: #25d366; }
-        .wa-channel-disc:hover svg { stroke: #ffffff; }
-
-        .fb-disc:hover { background: #1877f2; border-color: #1877f2; }
-        .fb-disc:hover svg { stroke: #ffffff; }
-
-        .yt-disc:hover { background: #ff0000; border-color: #ff0000; }
-        .yt-disc:hover svg { stroke: #ffffff; color: #ffffff; }
+        .web-disc:hover { background: var(--medical-blue); border-color: var(--medical-blue); }
+        .web-disc:hover svg { stroke: #ffffff; }
 
         .icon-tag {
           font-size: 9.5px;
           font-weight: 700;
-          color: #4a3c30;
+          color: var(--tx-main);
         }
+
         .embedded-map-card {
           width: 100%;
-          background: #ffffff;
           border-radius: 22px;
           padding: 14px 16px;
           box-sizing: border-box;
-          border: 1px solid var(--line);
-          box-shadow: 0 8px 24px rgba(40, 10, 4, 0.2);
           margin-bottom: 12px;
           text-align: left;
         }
-        .map-card-header-link {
-          text-decoration: none;
-        }
+
+        .map-card-header-link { text-decoration: none; }
         .map-card-header {
           display: flex;
           align-items: center;
@@ -904,105 +868,68 @@ END:VCARD`;
           gap: 6px;
           font-size: 11.5px;
           font-weight: 800;
-          color: var(--primary-dark);
+          color: var(--medical-blue);
           margin-bottom: 8px;
         }
+
         .map-iframe-container {
           width: 100%;
           border-radius: 14px;
           overflow: hidden;
-          border: 1px solid var(--line);
+          border: 1px solid var(--glass-border);
           margin-bottom: 8px;
         }
+
         .map-directions-link {
           font-size: 11px;
           font-weight: 750;
-          color: var(--gold-deep);
+          color: var(--medical-blue);
           text-decoration: none;
           display: block;
           text-align: center;
           margin-bottom: 8px;
         }
+
         .address-highlight-box {
-          background: var(--soft);
+          background: rgba(255,255,255,0.5);
           border-radius: 12px;
           padding: 10px 12px;
-          border: 1px solid var(--line);
+          border: 1px solid var(--glass-border);
           margin-bottom: 8px;
         }
+
         .agency-clean-address {
           font-size: 10.5px;
-          color: #554435;
+          color: var(--tx-main);
           margin: 0;
           line-height: 1.4;
           text-align: center;
         }
 
-        /* ---------- What we offer ---------- */
-        .offers-card {
-          width: 100%;
-          background: #ffffff;
-          border-radius: 22px;
-          padding: 16px 18px 8px;
-          box-sizing: border-box;
-          border: 1px solid var(--line);
-          box-shadow: 0 8px 24px rgba(40, 10, 4, 0.2);
-          margin-bottom: 14px;
-        }
-        .offers-title {
-          font-family: Georgia, serif;
-          font-size: 20px;
-          font-weight: 600;
-          color: var(--primary);
-          margin: 0 0 8px;
-        }
-        .offers-list {
-          list-style: none;
-          margin: 0;
-          padding: 0;
-        }
-        .offers-list li {
-          font-size: 12.5px;
-          color: #4a3c30;
-          padding: 10px 0;
-          border-top: 1px solid var(--line);
-        }
-        .offers-list li:first-child { border-top: none; }
-
-        /* ---------- Mini Footer ---------- */
         .mini-footer {
           width: 100%;
           display: flex;
           justify-content: center;
           margin-top: 2px;
         }
+
         .mini-footer-pill {
           display: inline-flex;
           align-items: center;
           justify-content: center;
           flex-wrap: wrap;
           gap: 4px;
-          padding: 5px 12px;
-          border: 1px solid var(--line);
+          padding: 6px 14px;
           border-radius: 999px;
-          background: #ffffff;
           font-size: 8.5px;
           letter-spacing: 0.3px;
-          color: var(--muted);
+          color: var(--tx-sub);
           line-height: 1.4;
         }
-        .mini-footer-pill strong {
-          color: var(--primary);
-          font-weight: 700;
-        }
-        .mini-footer-dot {
-          color: var(--gold);
-        }
-        .mini-footer-pill a {
-          color: var(--primary);
-          font-weight: 700;
-          text-decoration: none;
-        }
+
+        .mini-footer-pill strong { color: var(--tx-main); font-weight: 700; }
+        .mini-footer-dot { color: var(--medical-blue); }
+        .mini-footer-pill a { color: var(--medical-blue); font-weight: 700; text-decoration: none; }
       `}</style>
     </main>
   );
