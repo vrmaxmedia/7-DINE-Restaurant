@@ -242,6 +242,9 @@ END:VCARD`;
 
   return (
     <main className="medical-glass-viewport">
+      {/* BULLETPROOF FIXED BACKGROUND */}
+      <div className="fixed-bg"></div>
+
       <div className="main-content-flow">
         
         {/* Logo */}
@@ -457,16 +460,14 @@ END:VCARD`;
           padding: 0 !important;
           background-color: #e0f2fe !important; 
           min-height: 100% !important;
-          position: relative; /* important for pseudo-element */
         }
 
         /* 
          * FIX: Bulletproof Fixed Background for Mobile 
-         * Instead of background-attachment: fixed which bugs out on Safari/Android,
-         * we use a fixed pseudo-element behind everything.
+         * We place this class on a direct div in the React component 
+         * so Next.js doesn't accidentally hide it or break the styling.
          */
-        body::before {
-          content: "";
+        .fixed-bg {
           position: fixed;
           top: 0;
           left: 0;
@@ -476,7 +477,8 @@ END:VCARD`;
           background-size: cover;
           background-position: center;
           background-repeat: no-repeat;
-          z-index: -1; /* Keeps it behind all content */
+          z-index: -1; 
+          pointer-events: none; /* Let clicks pass through to content */
         }
 
         .medical-glass-viewport {
@@ -489,7 +491,6 @@ END:VCARD`;
           --glass-shadow: rgba(0, 0, 0, 0.08);
 
           min-height: 100vh;
-          /* Removed background properties from here, body::before handles it perfectly */
           background-color: transparent; 
           
           padding: 10px 16px 24px;
