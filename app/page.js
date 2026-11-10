@@ -16,9 +16,8 @@ const CLIENT_CONFIG = {
   fullAddress: "B-1/4, Block B, Yamuna Vihar, New Delhi, Delhi, 110053",
   phone: "+917982355228",
   cleanPhone: "917982355228",
-  logoUrl: "/logo.png", // Ensure you upload her logo/photo here
+  logoUrl: "/logo.png", 
 
-  // TODO: Replace YOUR_PLACE_ID with actual Place ID
   googleReviewUrl: "https://search.google.com/local/writereview?placeid=YOUR_PLACE_ID_HERE",
   mapsDirectionUrl:
     "https://www.google.com/maps/search/?api=1&query=" +
@@ -108,7 +107,7 @@ async function copyToClipboard(text) {
 export default function ClinicReviewPage() {
   const [mounted, setMounted] = useState(false);
   const [selectedChips, setSelectedChips] = useState([]);
-  const [language, setLanguage] = useState("ENGLISH");
+  const [language, setLanguage] = useState("ENGLISH"); // Default language is ENGLISH now
   const [reviewDraft, setReviewDraft] = useState("");
   const [loading, setLoading] = useState(false);
   const [copied, setCopied] = useState(false);
@@ -242,7 +241,7 @@ END:VCARD`;
 
   return (
     <main className="medical-glass-viewport">
-      {/* BULLETPROOF FIXED BACKGROUND */}
+      {/* BULLETPROOF FIXED BACKGROUND (Z-INDEX FIXED) */}
       <div className="fixed-bg"></div>
 
       <div className="main-content-flow">
@@ -450,10 +449,6 @@ END:VCARD`;
       </div>
 
       <style jsx global>{`
-        /* =========================================
-           MEDICAL GLASSMORPHISM THEME - BULLETPROOF FIXED BG
-           ========================================= */
-
         /* Force override any global layout settings */
         html, body {
           margin: 0 !important;
@@ -462,10 +457,30 @@ END:VCARD`;
           min-height: 100% !important;
         }
 
+        .medical-glass-viewport {
+          position: relative; /* Fixed layer interaction */
+          --tx-main: #0f172a;     
+          --tx-sub: #334155;      
+          --medical-blue: #0284c7; 
+          --medical-light: #38bdf8;
+          --glass-bg: rgba(255, 255, 255, 0.75); 
+          --glass-border: rgba(255, 255, 255, 0.6);
+          --glass-shadow: rgba(0, 0, 0, 0.08);
+
+          min-height: 100vh;
+          background-color: transparent; 
+          padding: 10px 16px 24px;
+          box-sizing: border-box;
+          font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+          color: var(--tx-main);
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+        }
+
         /* 
          * FIX: Bulletproof Fixed Background for Mobile 
-         * We place this class on a direct div in the React component 
-         * so Next.js doesn't accidentally hide it or break the styling.
+         * z-index: 0 ensures it sits ABOVE the solid fallback body color
          */
         .fixed-bg {
           position: fixed;
@@ -477,32 +492,17 @@ END:VCARD`;
           background-size: cover;
           background-position: center;
           background-repeat: no-repeat;
-          z-index: -1; 
+          z-index: 0; 
           pointer-events: none; /* Let clicks pass through to content */
         }
 
-        .medical-glass-viewport {
-          --tx-main: #0f172a;     
-          --tx-sub: #334155;      
-          --medical-blue: #0284c7; 
-          --medical-light: #38bdf8;
-          --glass-bg: rgba(255, 255, 255, 0.75); 
-          --glass-border: rgba(255, 255, 255, 0.6);
-          --glass-shadow: rgba(0, 0, 0, 0.08);
-
-          min-height: 100vh;
-          background-color: transparent; 
-          
-          padding: 10px 16px 24px;
-          box-sizing: border-box;
-          font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-          color: var(--tx-main);
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-        }
-
+        /* 
+         * FIX: Main content flow 
+         * z-index: 1 ensures it sits ABOVE the fixed image layer
+         */
         .main-content-flow {
+          position: relative;
+          z-index: 1;
           width: 100%;
           max-width: 410px;
           display: flex;
