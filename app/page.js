@@ -108,7 +108,7 @@ async function copyToClipboard(text) {
 export default function ClinicReviewPage() {
   const [mounted, setMounted] = useState(false);
   const [selectedChips, setSelectedChips] = useState([]);
-  const [language, setLanguage] = useState("HINGLISH");
+  const [language, setLanguage] = useState("ENGLISH"); // Default set to English here
   const [reviewDraft, setReviewDraft] = useState("");
   const [loading, setLoading] = useState(false);
   const [copied, setCopied] = useState(false);
