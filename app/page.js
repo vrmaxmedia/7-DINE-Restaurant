@@ -19,7 +19,7 @@ const CLIENT_CONFIG = {
   logoUrl: "/logo.png", // Ensure you upload her logo/photo here
 
   // TODO: Replace YOUR_PLACE_ID with actual Place ID
-  googleReviewUrl: "https://search.google.com/local/writereview?placeid=ChIJFRWJVdz9DDkRlv6j-9gc4PA",
+  googleReviewUrl: "https://search.google.com/local/writereview?placeid=YOUR_PLACE_ID_HERE",
   mapsDirectionUrl:
     "https://www.google.com/maps/search/?api=1&query=" +
     encodeURIComponent("Dr Kanika Gupta, Block B, Yamuna Vihar, Delhi"),
@@ -448,24 +448,31 @@ END:VCARD`;
 
       <style jsx global>{`
         /* =========================================
-           MEDICAL GLASSMORPHISM THEME
-           Uses the user's provided background image
+           MEDICAL GLASSMORPHISM THEME - FIXED GLOBAL BG
            ========================================= */
+
+        /* Force override any global layout settings */
+        html, body {
+          margin: 0 !important;
+          padding: 0 !important;
+          background-color: #e0f2fe !important; /* Forces medical blue fallback everywhere */
+          min-height: 100% !important;
+        }
 
         .medical-glass-viewport {
           --bg-fallback: #e0f2fe; 
-          --tx-main: #0f172a;     /* Dark Slate */
+          --tx-main: #0f172a;     
           --tx-sub: #334155;      
-          --medical-blue: #0284c7; /* Brand Blue */
+          --medical-blue: #0284c7; 
           --medical-light: #38bdf8;
-          --glass-bg: rgba(255, 255, 255, 0.75); /* Transparent White */
+          --glass-bg: rgba(255, 255, 255, 0.75); 
           --glass-border: rgba(255, 255, 255, 0.6);
           --glass-shadow: rgba(0, 0, 0, 0.08);
 
           min-height: 100vh;
           background-color: var(--bg-fallback);
           
-          /* User's Background Image MUST be in public directory */
+          /* Background Image */
           background-image: url('/1000317120.png'); 
           background-size: cover;
           background-position: center;
@@ -569,7 +576,7 @@ END:VCARD`;
         .stars-cluster {
           display: flex;
           gap: 4px;
-          color: #f59e0b; /* Golden Yellow */
+          color: #f59e0b;
           font-size: 16px;
           margin-bottom: 4px;
           filter: drop-shadow(0 2px 4px rgba(255,255,255,0.5));
